@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>PlantAI - Tahlil natijasi</title>
+
+<style>
+
+body{
+
+    background:#f4f9f4;
+
+    font-family:Arial, Helvetica, sans-serif;
+
+    margin:0;
+
+}
+
+.container{
+
+    max-width:950px;
+
+    width:95%;
+
+    margin:30px auto;
+
+    background:white;
+
+    padding:35px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+
+}
+
+h1{
+
+    text-align:center;
+
+    color:green;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#666;
+
+    font-size:18px;
+
+    margin-top:-10px;
+
+    margin-bottom:25px;
+
+}
+
+.top{
+
+    display:flex;
+
+    gap:30px;
+
+    margin-top:30px;
+
+}
+
+.left{
+
+    width:40%;
+
+    text-align:center;
+
+}
+
+.left img{
+
+    width:100%;
+
+    border-radius:15px;
+
+    border:4px solid #e8f5e9;
+
+    box-shadow:0 6px 18px rgba(0,0,0,.18);
+
+}
+
+.right{
+
+    width:60%;
+
+}
+
+.card{
+
+    background:#fafafa;
+
+    margin-top:18px;
+
+    padding:20px;
+
+    border-left:6px solid #2e7d32;
+
+    border-radius:12px;
+
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
+
+}
+
+.card h3{
+
+    margin-top:0;
+
+    color:#1b5e20;
+
+    font-size:22px;
+
+}
+
+.info{
+
+    font-size:20px;
+
+    line-height:2;
+
+}
+
+.button{
+
+    margin-top:30px;
+
+    text-align:center;
+
+}
+
+.button a{
+
+    text-decoration:none;
+
+}
+
+.button button{
+
+    padding:15px 35px;
+
+    font-size:19px;
+
+    background:#2e7d32;
+
+    color:white;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.button button:hover{
+
+    background:#1b5e20;
+
+    transform:scale(1.04);
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🌿 PlantAI</h1>
+
+<p class="subtitle">
+Sun'iy intellekt yordamida o'simlik kasalliklarini aniqlash tizimi
+</p>
+
+<div class="top">
+
+<div class="left">
+
+<img src="{{ image }}">
+
+</div>
+
+<div class="right">
+
+<div class="info">
+
+<b>🌱 O'simlik:</b> {{ plant }}
+
+<br><br>
+
+<b>🦠 Kasallik:</b> {{ disease  }}
+
+<br><br>
+
+<b>🔬 Lotincha nomi:</b> {{ latin_name }}
+
+<br><br>
+
+<b>🎯 Aniqlik:</b> {{ confidence }} %
+
+<br><br>
+
+<b>🚨 Xavflilik:</b> {{ severity }}
+
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>📖 Tavsif</h3>
+
+<p>{{ description }}</p>
+
+</div>
+
+<div class="card">
+
+<h3>🍂 Belgilari</h3>
+
+<p>{{ symptoms }}</p>
+
+</div>
+
+<div class="card">
+
+<h3>🔍 Sabablari</h3>
+
+<p>{{ causes}}</p>
+
+</div>
+
+<div class="card">
+
+<h3>💊 Davolash</h3>
+
+<p>{{ treatment  }}</p>
+
+</div>
+
+<div class="card">
+
+<h3>🛡 Profilaktika</h3>
+
+<p>{{ prevention }}</p>
+
+</div>
+
+<div class="button">
+
+<a href="/">
+
+<button>
+
+🔄 Boshqa rasmni tahlil qilish
+
+</button>
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

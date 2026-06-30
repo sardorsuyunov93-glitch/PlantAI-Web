@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PlantAI</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+
+    background:#edf5ed;
+
+    font-family:Arial,Helvetica,sans-serif;
+
+}
+
+.container{
+
+    width:95%;
+
+    max-width:700px;
+
+    margin:40px auto;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.15);
+
+}
+
+h1{
+
+    color:#148c3c;
+
+    text-align:center;
+
+    font-size:38px;
+
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-top:10px;
+
+    margin-bottom:35px;
+
+    font-size:18px;
+
+}
+
+.section{
+
+    margin-top:30px;
+
+}
+
+.section h2{
+
+    color:#148c3c;
+
+    margin-bottom:15px;
+
+}
+
+input[type=file]{
+
+    width:100%;
+
+    padding:12px;
+
+    border:2px dashed #148c3c;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+}
+
+video{
+
+    width:100%;
+
+    border-radius:15px;
+
+    border:2px solid #ddd;
+
+}
+
+#preview{
+
+    width:100%;
+
+    margin-top:20px;
+
+    border-radius:15px;
+
+    display:none;
+
+}
+
+.button-row{
+
+    display:flex;
+
+    gap:15px;
+
+    flex-wrap:wrap;
+
+    margin-top:20px;
+
+}
+
+button{
+
+    flex:1;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#148c3c;
+
+    color:white;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+button:hover{
+
+    background:#0f6d2f;
+
+}
+
+#camera{
+
+    display:none;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🌿 PlantAI</h1>
+
+<p class="subtitle">
+
+Sun'iy intellekt yordamida o'simlik kasalliklarini aniqlash tizimi
+
+</p>
+
+<form
+id="uploadForm"
+action="/predict"
+method="POST"
+enctype="multipart/form-data">
+
+<div class="section">
+
+<h2>📁 Galereyadan rasm tanlash</h2>
+
+<input
+type="file"
+name="image"
+id="imageInput"
+accept="image/*">
+
+</div>
+
+<div class="section">
+
+<h2>📷 Kamera orqali suratga olish</h2>
+
+<video
+id="camera"
+autoplay
+playsinline>
+</video>
+
+<canvas
+id="canvas"
+style="display:none;">
+</canvas>
+
+<img
+id="preview">
+
+<div class="button-row">
+
+<button
+type="button"
+onclick="startCamera()">
+
+📷 Kamerani ochish
+
+</button>
+
+<button
+type="button"
+onclick="captureImage()">
+
+📸 Suratga olish
+
+</button>
+
+</div>
+
+</div>
+
+<div class="section">
+
+<button
+type="submit">
+
+🔍 Kasallikni aniqlash
+
+</button>
+
+</div>
+
+<div id="loading" style="display:none; margin-top:25px;">
+
+<h2>🔍 Tahlil qilinmoqda...</h2>
+
+<p>Sun'iy intellekt rasmni tahlil qilmoqda.</p>
+
+<p>Iltimos, kuting...</p>
+
+</div>
+
+</form>
+
+</div>
+
+<script>
+
+const video = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const preview = document.getElementById("preview");
+const form = document.getElementById("uploadForm");
+const imageInput = document.getElementById("imageInput");
+
+let stream = null;
+
+// Kamerani ishga tushirish
+async function startCamera(){
+
+    try{
+
+        stream = await navigator.mediaDevices.getUserMedia({
+            video:{
+                facingMode:"environment"
+            },
+            audio:false
+        });
+
+        video.style.display = "block";
+        video.srcObject = stream;
+
+    }
+    catch(error){
+
+        alert("Kamerani ochib bo'lmadi!");
+
+        console.log(error);
+
+    }
+
+}
+
+// Suratga olish
+function captureImage(){
+
+    if(!stream){
+
+        alert("Avval kamerani oching.");
+
+        return;
+
+    }
+
+    canvas.width = video.videoWidth;
+
+    canvas.height = video.videoHeight;
+
+    const ctx = canvas.getContext("2d");
+
+    ctx.drawImage(video,0,0);
+
+    preview.src = canvas.toDataURL("image/png");
+
+    preview.style.display = "block";
+
+    canvas.toBlob(function(blob){
+
+        const formData = new FormData();
+
+        formData.append(
+            "image",
+            blob,
+            "camera.png"
+        );
+
+        fetch("/predict",{
+
+            method:"POST",
+
+            body:formData
+
+        })
+
+        .then(response=>response.text())
+
+        .then(html=>{
+
+            document.open();
+
+            document.write(html);
+
+            document.close();
+
+        })
+
+        .catch(error=>{
+
+            console.log(error);
+
+            alert("Serverga yuborishda xatolik yuz berdi.");
+
+        });
+
+    },"image/png");
+
+}
+
+// Galereyadan rasm tanlanganda
+form.addEventListener("submit",function(e){
+
+    if(imageInput.files.length===0){
+
+        e.preventDefault();
+
+        alert("Rasm tanlang yoki kameradan foydalaning.");
+
+    }
+
+});
+
+form.addEventListener("submit", function () {
+
+    document.getElementById("loading").style.display = "block";
+
+});
+
+</script>
+
+</body>
+
+</html>
